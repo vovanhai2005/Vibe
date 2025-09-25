@@ -1,0 +1,25 @@
+{
+  "name": "vibe",
+  "version": "1.0.0",
+  "description": "Vibe messaging app",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd frontend && npm run build",
+    "start": "cd backend && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vovanhai2005/Vibe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vovanhai2005/Vibe/issues"
+  },
+  "homepage": "https://github.com/vovanhai2005/Vibe#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
