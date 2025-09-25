@@ -32,13 +32,12 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/friends", friendRoutes);
 app.use("/api/users", userRoutes);
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Handle React routing, return all requests to React app
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+    });
+}
 
 server.listen(PORT, () => {
     console.log('Server is running on PORT:' + PORT);
