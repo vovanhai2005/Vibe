@@ -14,7 +14,7 @@ export const useChatStore = create((set, get) => ({
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
-      const response = await axiosInstance.get("/api/messages/users");
+      const response = await axiosInstance.get("/messages/users");
       set({ users: response.data });
     } catch (error) {
       toast.error(error?.response?.data?.message || "Failed to load users");
@@ -28,7 +28,7 @@ export const useChatStore = create((set, get) => ({
     
     set({ isMessagesLoading: true });
     try {
-      const response = await axiosInstance.get(`/api/messages/${userId}`);
+      const response = await axiosInstance.get(`/messages/${userId}`);
       
       // Deduplicate messages by ID
       const uniqueMessages = Array.from(
@@ -52,7 +52,7 @@ export const useChatStore = create((set, get) => ({
     set({ isSendingMessage: true });
 
     try {
-        const res = await axiosInstance.post(`/api/messages/send/${selectedUser._id}`, data);
+        const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, data);
         set({ messages: [...messages, res.data] });
         return res.data;
     } catch (error) {

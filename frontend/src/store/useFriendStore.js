@@ -12,7 +12,7 @@ export const useFriendStore = create((set, get) => ({
     sendFriendRequest: async (userId) => {
         try {
             // Add empty object as second parameter to ensure proper request format
-            const response = await axiosInstance.post(`/api/friends/request/${userId}`, {});
+            const response = await axiosInstance.post(`/friends/request/${userId}`, {});
             
             toast.success(response.data?.message || "Friend request sent successfully");
             return true;
@@ -38,7 +38,7 @@ export const useFriendStore = create((set, get) => ({
     getFriends: async () => {
         set({ isLoading: true, error: null });
         try {
-            const response = await axiosInstance.get("/api/friends");
+            const response = await axiosInstance.get("/friends");
             set({ friends: response.data, isLoading: false });
         } catch (error) {
         console.error("Get friends error:", error);
@@ -53,7 +53,7 @@ export const useFriendStore = create((set, get) => ({
     getPendingRequests: async () => {
         set({ isLoading: true, error: null });
         try {
-            const response = await axiosInstance.get("/api/friends/pending");
+            const response = await axiosInstance.get("/friends/pending");
             set({ pendingRequests: response.data, isLoading: false });
         } catch (error) {
             console.error("Get pending requests error:", error);
@@ -66,7 +66,7 @@ export const useFriendStore = create((set, get) => ({
 
     acceptFriendRequest: async (requestId) => {
         try {
-            await axiosInstance.post(`/api/friends/accept/${requestId}`);
+            await axiosInstance.post(`/friends/accept/${requestId}`);
             // Update local state
             set((state) => ({
                 pendingRequests: state.pendingRequests.filter(req => req._id !== requestId)
@@ -82,7 +82,7 @@ export const useFriendStore = create((set, get) => ({
 
     rejectFriendRequest: async (requestId) => {
         try {
-            await axiosInstance.post(`/api/friends/reject/${requestId}`);
+            await axiosInstance.post(`/friends/reject/${requestId}`);
             // Update local state
             set((state) => ({
                 pendingRequests: state.pendingRequests.filter(req => req._id !== requestId)

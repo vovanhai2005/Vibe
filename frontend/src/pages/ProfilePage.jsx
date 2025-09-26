@@ -43,7 +43,7 @@ const ProfilePage = () => {
           });
         } else {
           // Fetch the requested user's profile
-          const response = await axiosInstance.get(`/api/users/${id}`);
+          const response = await axiosInstance.get(`/users/${id}`);
           setUser(response.data);
           setProfileData({
             username: response.data?.username || '',

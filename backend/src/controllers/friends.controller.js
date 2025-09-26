@@ -201,7 +201,8 @@ export const getPendingRequests = async (req, res) => {
 
         const incomingRequests = user.friendRequests.filter(req => req.recipient.toString() === userId.toString());
 
-        res.status(200).json(user.friendRequests);
+        // Corrected: Return only the incoming friend requests
+        res.status(200).json(incomingRequests);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });
