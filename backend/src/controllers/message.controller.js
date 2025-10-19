@@ -2,15 +2,55 @@ import User from '../models/user.model.js';
 import Message from '../models/message.model.js';
 import cloudinary from '../lib/cloudinary.js';
 import { io , getReceiverSocketId } from '../lib/socket.js';
+import Friend from '../models/friend.model.js';
 
 export const getUsersForSidebar = async (req, res) => {
     try {
-        const loggedInUserId = req.user.id;
-        const filteredUsers = await User.find({_id: {$ne: loggedInUserId}}).select("-password");
-        res.status(200).json(filteredUsers);
+        const userId = req.user._id;
+
+        const friends = await Friend.find({
+            $or: [
+                { requester: userId, status: 'accepted' },
+                { recipient: userId, status: 'accepted' }
+            ]
+        })
+        .populate('requester', 'username fullName profilePicture')
+        .populate('recipient', 'username fullName profilePicture');
+
+        const friendsList = friends.map(friend => {
+            const isRequester = friend.requester._id.toString() !== userId.toString();
+            return isRequester ? friend.requester : friend.recipient;
+        });
+
+        const friendsWithLastMessage = await Promise.all(friendsList.map(async (friend) => {
+            const lastMessage = await Message.findOne({
+                $or: [
+                    { senderId: userId, receiverId: friend._id},
+                    { senderId: friend._id, receiverId: userId}
+                ]
+            })
+            .sort({ createdAt: -1 })
+            
+            const unReadCount = await Message.coundDocuments({
+                senderId: friend._id,
+                receiverId: userId,
+                read: false
+            });
+
+            return {
+                ...user._doc,
+                lastMessage,
+                unReadCount,
+                lastACtivity: lastMessage ? lastMessage.createdAt : new Date(0)
+            };
+        }));
+
+        friendsWithLastMessage.sort((a, b) => b.lastACtivity - a.lastACtivity);
+
+        res.status(200).json(friendsWithLastMessage);    
     } catch (error) {
         console.error("Error fetching users for sidebar:", error);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Failed to fetch users for sidebar"});
     }
 };
 
@@ -87,5 +127,22 @@ export const sendMessage = async (req, res) => {
     } catch (error) {
         console.error("Error sending message:", error);
         res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const markAsRead = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const { friendId } = req.params;
+
+        await Message.updateMany(
+            { senderId: friendId, receiverId: userId, read: false},
+            { read : true } 
+        );
+
+        res.status(200).json({ message: "Messages marked as read" });
+    } catch (error) {
+        console.error("Error marking messages as read:", error);
+        res.status(500).json({ message: "Failed to mark message as read" });
     }
 };

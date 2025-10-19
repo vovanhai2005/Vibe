@@ -15,7 +15,7 @@ export function getReceiverSocketId(userId) {
 }
 
 // Used to store online users
-const userSocketMap = {}; // {userId: socketId}
+const userSocketMap = {}; // {user Id: socketId}
 
 io.on("connection", (socket) => {
     console.log("a user connected", socket.id);
@@ -35,9 +35,9 @@ io.on("connection", (socket) => {
     });
 
     socket.on("sendFriendRequest", ({ recipientId, requesterData }) => {
-      io.to(recipientId).emit("newFriendRequest", {
-        requester: requesterData
-      });
+        io.to(recipientId).emit("newFriendRequest", {
+            requester: requesterData
+        });
     });
 });
 

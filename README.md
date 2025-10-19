@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Vibe is a full-stack real-time messaging application that allows users to connect with friends, send messages, and share images. Built with a modern tech stack including React, Node.js, Express, MongoDB, and Socket.io, Vibe provides a seamless and interactive user experience.
+Vibe is a full-stack real-time messaging application that allows users to connect with friends, send messages, and share images. Built with a modern MERN stack and Socket.io, Vibe provides a seamless and interactive user experience.
 
 ## Features
 
